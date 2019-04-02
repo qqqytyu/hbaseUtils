@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>lll.hadoop.hbase</groupId>
+    <artifactId>utils</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hbase.version>2.0.4</hbase.version>
+    </properties>
+
+    <dependencies>
+
+        <!--HBASE-->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-annotations</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-examples</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-external-blockcache</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-hadoop2-compat</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-hadoop-compat</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-it</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-procedure</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-protocol</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-resource-bundle</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-rest</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-shell</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-thrift</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.htrace</groupId>
+            <artifactId>htrace-core</artifactId>
+            <version>3.1.0-incubating</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.23.Final</version>
+        </dependency>
+        <!--HBASE END-->
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+
+            <!--MAVEN打包过滤-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <!--打包文件名-->
+                    <finalName>lll_hadoop_test</finalName>
+                    <!--打包文件名是否包含assembly.xml中的ID字段-->
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <!--配置文件地址-->
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <outputDirectory>target/</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--maven 编译时指定java版本-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <!--maven 编译时跳过测试类-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>
