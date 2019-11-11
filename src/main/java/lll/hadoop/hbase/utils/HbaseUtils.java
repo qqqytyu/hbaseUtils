@@ -71,7 +71,7 @@ public class HbaseUtils {
                     throw ex;
                 else logger.warn(String.format("Hbase Connection is interruption, Retry Count: %d",num));
             }
-            Thread.sleep(1000 * 60);
+            Thread.sleep(1000);
         }
     }
 
@@ -98,7 +98,7 @@ public class HbaseUtils {
     public boolean insertCell(String tableName, String rowKey, String family, String column, String value){
         Table table = null;
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Put put = new Put(rowKey.getBytes());
             put.addColumn(family.getBytes(), column.getBytes(), value.getBytes());
@@ -123,7 +123,7 @@ public class HbaseUtils {
     public boolean insertCells(String tableName, String rowKey, String family, Map<String, String> cells){
         Table table = null;
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Put put = new Put(rowKey.getBytes());
             for (Map.Entry<String, String> entry : cells.entrySet()){
@@ -149,7 +149,7 @@ public class HbaseUtils {
     public boolean insertCells(String tableName, String rowKey, Map<String,Map<String,String>> cells){
         Table table = null;
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Put put = new Put(rowKey.getBytes());
             for (Map.Entry<String, Map<String,String>> entry : cells.entrySet()){
@@ -219,7 +219,7 @@ public class HbaseUtils {
         try {
             if(this.hputs == null)
                 return false;
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             table.put(this.hputs);
             this.hputs = null;
@@ -254,13 +254,14 @@ public class HbaseUtils {
         Table table = null;
         Map<String,String> returnData = new HashMap<>();
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Get get = new Get(rowKey.getBytes());
             if(colls != null)
                 for(Map.Entry<String, String> entry : colls.entrySet())
                     get.addColumn(entry.getKey().getBytes(), entry.getValue().getBytes());
-            cellsToMap(table.get(get).listCells(), returnData);
+            Result result = table.get(get);
+            cellsToMap(result.listCells(), returnData);
             return returnData;
         }catch (Exception ex){
             logger.error(ex.getMessage(), ex);
@@ -291,7 +292,7 @@ public class HbaseUtils {
         Table table = null;
         Map<String,Map<String,String>> returnData = new HashMap<>();
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             PrefixFilter filter = new PrefixFilter(rowKeyPrefix.getBytes());
             Scan scan = new Scan();
@@ -340,7 +341,7 @@ public class HbaseUtils {
         Table table = null;
         Map<String,Map<String,String>> returnData = new HashMap<>();
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Scan scan = new Scan();
             scan.withStartRow(startRow.getBytes(),includeStart);
@@ -402,7 +403,7 @@ public class HbaseUtils {
         Table table = null;
         List<Delete> dels = new ArrayList<>();
         try{
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             PrefixFilter filter = new PrefixFilter(rowKeyPrefix.getBytes());
             Scan scan = new Scan();
@@ -449,7 +450,7 @@ public class HbaseUtils {
         Table table = null;
         List<Delete> dels = new ArrayList<>();
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Scan scan = new Scan();
             scan.withStartRow(startRow.getBytes(),includeStart);
@@ -482,7 +483,7 @@ public class HbaseUtils {
     public boolean deleteCell(String tableName, String rowkey,String family, String qualifier){
         Table table = null;
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Delete del = new Delete(rowkey.getBytes());
             del.addColumn(family.getBytes(), qualifier.getBytes());
@@ -507,7 +508,7 @@ public class HbaseUtils {
     public boolean deleteCells(String tableName, String rowkey,String family,List<String> colls){
         Table table = null;
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Delete del = new Delete(rowkey.getBytes());
             for(String coll : colls)
@@ -532,7 +533,7 @@ public class HbaseUtils {
     public boolean deleteCells(String tableName, String rowkey, Map<String, List<String>> map){
         Table table = null;
         try {
-            getConnection();
+            longConnection();
             table = conn.getTable(TableName.valueOf(tableName));
             Delete del = new Delete(rowkey.getBytes());
             for (Map.Entry<String, List<String>> entry : map.entrySet())
@@ -574,6 +575,14 @@ public class HbaseUtils {
     //设置hputs一次性提交的条数
     public void setHput_max_size(int hput_max_size) {
         this.hput_max_size = hput_max_size;
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        HbaseUtils hbaseUtils = new HbaseUtils("kn52.cu-air.com,kn55.cu-air.com,kn56.cu-air.com","2181");
+
+//        hbaseUtils.deleteByRange("cua_caci:flown_seg_sumofday","20190920_000000","20191020_ZZZZZZ", "information", "prep_fare");
+
     }
 
 }
